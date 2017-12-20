@@ -199,14 +199,18 @@ public class Flashlight extends CordovaPlugin {
     // we need to release the camera, so other apps can use it
     new Thread(new Runnable() {
       public void run() {
-        if (mCamera != null) {
-          mCamera.stopPreview();
-          mCamera.setPreviewCallback(null);
-          mCamera.unlock();
-          mCamera.release();
-          mCamera = null;
+        try {
+          if (mCamera != null) {
+            mCamera.stopPreview();
+            mCamera.setPreviewCallback(null);
+            // mCamera.unlock();
+            mCamera.release();
+            mCamera = null;
+          }
+          releasing = false;
+        } catch (Exception e) {
+          callbackContext.error(e.getMessage());
         }
-        releasing = false;
       }
     }).start();
   }
